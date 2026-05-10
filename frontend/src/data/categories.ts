@@ -1,93 +1,109 @@
-// src/data/categories.ts
+// src/data/categories.ts - FIXED VERSION (ORIGINAL ORDER + REVERSED FLAG)
 
 export type Category = {
   instruction: string;
   options: string[];
+  reversed?: boolean; // Flag untuk kategori yang perlu dibalik skornya
 };
 
 export const categories: Record<string, Category> = {
-
   I: {
-    instruction: "Berilah tanda pada jawaban yang paling sesuai berkenaan dengan pekerjaan anda saat ini",
+    instruction:
+      "Berilah tanda pada jawaban yang paling sesuai berkenaan dengan pekerjaan anda saat ini",
     options: [
-      "Sangat Tidak Setuju", // buruk → skor 1
-      "Kurang Setuju",       // skor 2
-      "Cukup Setuju",        // skor 3
-      "Sangat Setuju",       // baik → skor 4
+      "Sangat Setuju", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Cukup Setuju", // index 1 → skor 2 → reversed jadi 3
+      "Kurang Setuju", // index 2 → skor 3 → reversed jadi 2
+      "Sangat Tidak Setuju", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true, // PENTING: Flag ini membuat skor dibalik
   },
   II: {
     instruction: "Kondisi kesehatan anda dalam satu bulan terakhir",
     options: [
-      "Hampir selalu",     // paling buruk → skor 1
-      "Sering",            // skor 2
-      "Kadang-kadang",     // skor 3
-      "Hampir tidak ada",  // paling baik → skor 4
+      "Hampir tidak ada", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Kadang-kadang", // index 1 → skor 2 → reversed jadi 3
+      "Sering", // index 2 → skor 3 → reversed jadi 2
+      "Hampir selalu", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   III: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan orang-orang disekitar anda saat ini",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan orang-orang disekitar anda saat ini",
     options: [
-      "Tidak sama sekali",   // buruk → 1
-      "Kadang-kadang",       // 2
-      "Sering",              // 3
-      "Selalu",              // baik → 4  
+      "Selalu", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Sering", // index 1 → skor 2 → reversed jadi 3
+      "Kadang-kadang", // index 2 → skor 3 → reversed jadi 2
+      "Tidak sama sekali", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   IV: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan aspek pekerjaan anda yang lebih rinci sesuai dengan kondisi saat ini",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan aspek pekerjaan anda yang lebih rinci sesuai dengan kondisi saat ini",
     options: [
-      "Sangat tidak benar",  // buruk → 1
-      "Kurang benar",        // 2
-      "Cukup benar",         // 3
-      "Benar",               // baik → 4
+      "Benar", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Cukup benar", // index 1 → skor 2 → reversed jadi 3
+      "Kurang benar", // index 2 → skor 3 → reversed jadi 2
+      "Sangat tidak benar", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   V: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan situasi di tempat kerja saat ini",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan situasi di tempat kerja saat ini",
     options: [
-      "Sangat tidak benar",  // buruk → 1
-      "Kurang benar",        // 2
-      "Cukup benar",         // 3
-      "Benar",               // baik → 4
+      "Benar", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Cukup benar", // index 1 → skor 2 → reversed jadi 3
+      "Kurang benar", // index 2 → skor 3 → reversed jadi 2
+      "Sangat tidak benar", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   VI: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan organisasi di tempat kerja anda saat ini",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan organisasi di tempat kerja anda saat ini",
     options: [
-      "Sangat tidak setuju", // buruk → 1
-      "Kurang setuju",       // 2
-      "Cukup setuju",        // 3
-      "Sangat setuju",       // baik → 4
+      "Sangat setuju", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Cukup setuju", // index 1 → skor 2 → reversed jadi 3
+      "Kurang setuju", // index 2 → skor 3 → reversed jadi 2
+      "Sangat tidak setuju", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   VII: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan kondisi pekerjaan dan kinerja anda saat ini",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan kondisi pekerjaan dan kinerja anda saat ini",
     options: [
-      "Tidak benar",         // buruk → 1
-      "Kurang benar",        // 2
-      "Cukup benar",         // 3
-      "Benar",               // baik → 4
+      "Benar", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Cukup benar", // index 1 → skor 2 → reversed jadi 3
+      "Kurang benar", // index 2 → skor 3 → reversed jadi 2
+      "Tidak benar", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   VIII: {
-    instruction: "Jawaban yang paling sesuai berkenaan dengan kondisi konflik Peran Ganda antara pekerjaan dan keluarga",
+    instruction:
+      "Jawaban yang paling sesuai berkenaan dengan kondisi konflik Peran Ganda antara pekerjaan dan keluarga",
     options: [
-      "Sangat tidak setuju", // buruk → 1
-      "Tidak setuju",        // 2
-      "Setuju",              // 3
-      "Sangat setuju",       // baik → 4
+      "Sangat setuju", // index 0 → skor 1 → reversed jadi 4 (baik)
+      "Setuju", // index 1 → skor 2 → reversed jadi 3
+      "Tidak setuju", // index 2 → skor 3 → reversed jadi 2
+      "Sangat tidak setuju", // index 3 → skor 4 → reversed jadi 1 (buruk)
     ],
+    reversed: true,
   },
   IX: {
-    instruction: "Stres Appraisal - Jawaban yang paling sesuai berkenaan dengan kondisi anda",
+    instruction:
+      "Stres Appraisal - Jawaban yang paling sesuai berkenaan dengan kondisi anda",
     options: [
-      "Sangat tidak sesuai", // buruk → 1
-      "Sedikit",             // 2
-      "Cukup",               // 3
-      "Sangat cukup",        // 4
-      "Sangat sesuai",       // baik → 5
+      "Sangat tidak sesuai", // buruk → 1 (TIDAK reversed, sudah benar)
+      "Sedikit", // 2
+      "Cukup", // 3
+      "Sangat cukup", // 4
+      "Sangat sesuai", // baik → 5
     ],
+    // Kategori IX TIDAK pakai reversed (sudah benar urutannya)
   },
-
 };

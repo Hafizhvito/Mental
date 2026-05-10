@@ -1,3 +1,4 @@
+// RespondentForm.tsx
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,22 +23,22 @@ export default function RespondentForm() {
     { value: "Consultant", label: "Konsultan" },
     { value: "Contractor", label: "Contractor/Freelancer" },
     { value: "Intern", label: "Magang/Trainee" },
+    { value: "Other", label: "Lainnya" },
   ];
-  
+
   useEffect(() => {
     const saved = localStorage.getItem("respondent");
-      if (saved) {
-        try {
-          const parsed = JSON.parse(saved);
-          if (parsed.name) setName(parsed.name);
-          if (parsed.age) setAge(parsed.age);
-          if (parsed.status) setStatus(parsed.status);
-        } catch (err) {
-          console.error("Failed to parse respondent data:", err);
-        }
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed.name) setName(parsed.name);
+        if (parsed.age) setAge(parsed.age);
+        if (parsed.status) setStatus(parsed.status);
+      } catch (err) {
+        console.error("Failed to parse respondent data:", err);
       }
+    }
   }, []);
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,7 +80,6 @@ export default function RespondentForm() {
   };
 
   return (
-    
     <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-slate-50 to-blue-50 p-6">
       <div className="max-w-lg w-full">
         <div className="text-center mb-8 transform transition-all duration-500 ease-out">
@@ -87,12 +87,10 @@ export default function RespondentForm() {
             <User className="h-8 w-8 text-blue-600" />
           </div>
           <h1 className="mt-4 text-2xl sm:text-3xl font-bold text-gray-800">
-            Survey Kepuasan Kerja
+            DINI Sehat Mental
           </h1>
           <p className="mt-2 text-gray-600 text-sm leading-relaxed">
-            Evaluasi komprehensif untuk meningkatkan
-            <br />
-            kualitas lingkungan kerja perusahaan
+            Skrining Stres Kerja untuk Pekerja Perempuan
           </p>
         </div>
 
@@ -158,12 +156,11 @@ export default function RespondentForm() {
                 placeholder="Masukkan usia Anda"
                 value={age}
                 onChange={(e) => {
-                const newAge = e.target.value;
-                setAge(newAge);
-                const updated = { name, age: newAge, status };
-                localStorage.setItem("respondent", JSON.stringify(updated));
-              }}
-
+                  const newAge = e.target.value;
+                  setAge(newAge);
+                  const updated = { name, age: newAge, status };
+                  localStorage.setItem("respondent", JSON.stringify(updated));
+                }}
                 onFocus={() => setFocusedField("age")}
                 onBlur={() => setFocusedField("")}
                 min="18"
@@ -179,20 +176,22 @@ export default function RespondentForm() {
             </div>
           </div>
 
-          {/* Status Pekerjaan */}
+          {/* Posisi/Level Pekerjaan */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Posisi/Level Pekerjaan
             </label>
             <div className="relative">
               <Briefcase
-                className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 z-10 ${
+                className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 transition-colors duration-200 ${
                   focusedField === "status" || status
                     ? "text-blue-600"
                     : "text-gray-400"
                 }`}
               />
-              <select
+              <input
+                type="text"
+                placeholder="Masukkan posisi/level pekerjaan Anda"
                 value={status}
                 onChange={(e) => {
                   const newStatus = e.target.value;
@@ -202,36 +201,14 @@ export default function RespondentForm() {
                 }}
                 onFocus={() => setFocusedField("status")}
                 onBlur={() => setFocusedField("")}
-                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl transition-all duration-200 outline-none appearance-none bg-white ${
+                className={`w-full pl-10 pr-4 py-3 border-2 rounded-xl transition-all duration-200 outline-none ${
                   focusedField === "status"
                     ? "border-blue-500 ring-4 ring-blue-50"
                     : "border-gray-200 hover:border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-50"
                 }`}
                 required
                 disabled={isSubmitting}
-              >
-                <option value="">Pilih posisi/level pekerjaan Anda</option>
-                {jobStatuses.map((job) => (
-                  <option key={job.value} value={job.value}>
-                    {job.label}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                <svg
-                  className="h-4 w-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </div>
+              />
             </div>
           </div>
 
@@ -239,7 +216,7 @@ export default function RespondentForm() {
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-xl p-4">
             <h3 className="font-semibold text-gray-800 text-sm mb-3 flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-blue-600" />
-              Tentang Survey Ini
+              Tentang Skrining Stres Kerja
             </h3>
             <div className="space-y-1 text-xs text-gray-600 leading-relaxed">
               <div className="flex items-start gap-2">
@@ -255,7 +232,7 @@ export default function RespondentForm() {
               <div className="flex items-start gap-2">
                 <span className="text-blue-600 font-semibold">•</span>
                 <span>
-                  Hasil membantu evaluasi dan perbaikan lingkungan kerja
+                  Hasil Skrining Stres Kerja dapat langsung anda ketahui
                 </span>
               </div>
             </div>
@@ -282,16 +259,10 @@ export default function RespondentForm() {
                 Memproses...
               </div>
             ) : (
-              "Mulai Survey"
+              "Mulai Skrining"
             )}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-xs text-gray-500 leading-relaxed">
-          Survey ini dirancang khusus untuk mengevaluasi dan meningkatkan
-          <br />
-          kualitas lingkungan kerja di perusahaan Anda
-        </p>
       </div>
     </div>
   );

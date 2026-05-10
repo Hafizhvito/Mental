@@ -55,13 +55,16 @@ const Dashboard = () => {
         setLoading(true);
         setError(null);
 
-        const res = await axios.get("http://localhost:8000/api/results", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+        const res = await axios.get(
+          "https://api.skriningstreskerjaperempuan.com/api/results",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        );
 
         setResults(res.data);
       } catch (err: any) {
@@ -223,13 +226,6 @@ const Dashboard = () => {
             icon={<Users className="w-6 h-6 text-blue-600" />}
             bg="bg-blue-100"
             color="text-blue-600"
-          />
-          <StatCard
-            title="Rata-rata Skor"
-            value={`${rataRata}%`}
-            icon={<TrendingUp className="w-6 h-6 text-emerald-600" />}
-            bg="bg-emerald-100"
-            color="text-emerald-600"
           />
           <StatCard
             title="Stress Tinggi"

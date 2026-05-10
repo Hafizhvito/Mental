@@ -3,10 +3,8 @@ import LandingPage from "./pages/LandingPage";
 import RespondentForm from "./pages/RespondentForm";
 import Questionnaire from "./pages/Questionnaire";
 import Results from "./pages/Results";
-import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import ResultRoute from "./routes/ResultsRoutes";
-
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
 import RespondentRoute from "./routes/RespondentRoute";
@@ -15,7 +13,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100">
       <Routes>
-        {/* hanya bisa diakses kalau belum login dokter */}
+        {/* Halaman utama (LandingPage) */}
         <Route
           path="/"
           element={
@@ -25,10 +23,10 @@ function App() {
           }
         />
 
-        {/* form responden selalu bisa diakses */}
+        {/* Form responden */}
         <Route path="/form" element={<RespondentForm />} />
 
-        {/* questionnaire hanya bisa diakses kalau sudah isi form */}
+        {/* Questionnaire hanya bisa diakses kalau sudah isi form */}
         <Route
           path="/questionnaire"
           element={
@@ -38,6 +36,7 @@ function App() {
           }
         />
 
+        {/* Hasil responden */}
         <Route
           path="/results"
           element={
@@ -47,16 +46,7 @@ function App() {
           }
         />
 
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <Login />
-            </PublicRoute>
-          }
-        />
-
-        {/* dashboard dokter → harus login */}
+        {/* Dashboard dokter → hanya jika login */}
         <Route
           path="/dashboard"
           element={

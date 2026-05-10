@@ -1,3 +1,4 @@
+// frontend/src/pages/Form.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -12,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get<Post[]>("http://127.0.0.1:8000/api/posts")
+      .get<Post[]>("https://api.skriningstreskerjaperempuan.com/api/posts")
       .then((res) => setPosts(res.data));
   }, []);
 

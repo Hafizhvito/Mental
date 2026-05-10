@@ -17,7 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->append([
             HandleCors::class,
-            EnsureFrontendRequestsAreStateful::class, // ini penting untuk Sanctum
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

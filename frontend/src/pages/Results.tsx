@@ -1,428 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import {
-//   Phone,
-//   Globe,
-//   AlertTriangle,
-//   CheckCircle,
-//   Clock,
-//   Heart,
-//   Brain,
-//   Shield,
-//   User,
-//   Calendar,
-//   Briefcase,
-//   BarChart3,
-//   ArrowRight,
-//   Download,
-//   Share2,
-// } from "lucide-react";
-
-// // Import gambar ilustrasi yang sudah ada
-// import StressLow from "../assets/stress_low.png";
-// import StressMedium from "../assets/stress_medium.png";
-// import StressHigh from "../assets/stress_high.png";
-
-// interface ResultData {
-//   name: string;
-//   age: number;
-//   status: string;
-//   score_total: number;
-//   problematic_category: number;
-//   stress_level: "rendah" | "sedang" | "tinggi";
-// }
-
-// export default function Results() {
-//   const navigate = useNavigate();
-//   const [data, setData] = useState<ResultData | null>(null);
-//   const [isLoaded, setIsLoaded] = useState(false);
-//   const respondent = localStorage.getItem("respondent_id");
-
-//   useEffect(() => {
-//     // Simulasi loading untuk UX yang lebih baik
-//     setIsLoaded(false);
-
-//     axios
-//       .get(`http://localhost:8000/api/results/${respondent}`)
-//       .then((res) => {
-//         setData(res.data);
-//         // Delay sedikit untuk loading animation
-//         setTimeout(() => setIsLoaded(true), 800);
-//       })
-//       .catch(() => navigate("/questionnaire"));
-//   }, [respondent, navigate]);
-
-//   // Loading State
-//   if (!data || !isLoaded) {
-//     return (
-//       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-//         <div className="text-center space-y-4">
-//           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-//           <p className="text-gray-600 font-medium">
-//             Menganalisis hasil assessment Anda...
-//           </p>
-//           <p className="text-sm text-gray-500">Harap tunggu beberapa saat</p>
-//         </div>
-//       </div>
-//     );
-//   }
-
-//   const { name, age, status, score_total, problematic_category, stress_level } =
-//     data;
-
-//   const maxScore = 50;
-//   const percentage = ((score_total / maxScore) * 100).toFixed(1);
-
-//   // Enhanced configuration dengan gambar PNG yang sudah ada
-//   const config = {
-//     rendah: {
-//       color: "emerald",
-//       bgGradient: "from-emerald-50 to-green-50",
-//       title: "Kondisi Stress Terkendali",
-//       subtitle: "Anda dalam kondisi yang baik!",
-//       message:
-//         "Tingkat stress Anda berada dalam rentang normal. Kondisi mental dan fisik Anda cukup stabil untuk menjalani aktivitas sehari-hari.",
-//       img: StressLow,
-//       scoreColor: "text-emerald-600",
-//       bgColor: "bg-emerald-500",
-//       borderColor: "border-emerald-200",
-//       actions: [
-//         {
-//           icon: <Heart className="w-5 h-5" />,
-//           title: "Pertahankan Pola Hidup Sehat",
-//           desc: "Jaga pola tidur 7-8 jam dan konsumsi makanan bergizi seimbang",
-//         },
-//         {
-//           icon: <Clock className="w-5 h-5" />,
-//           title: "Olahraga Teratur",
-//           desc: "Minimal 30 menit aktivitas fisik, 3x seminggu untuk menjaga stamina",
-//         },
-//         {
-//           icon: <User className="w-5 h-5" />,
-//           title: "Jaga Hubungan Sosial",
-//           desc: "Pertahankan komunikasi baik dengan keluarga dan teman terdekat",
-//         },
-//       ],
-//     },
-//     sedang: {
-//       color: "amber",
-//       bgGradient: "from-amber-50 to-yellow-50",
-//       title: "Perlu Perhatian Khusus",
-//       subtitle: "Waspada dan ambil tindakan preventif",
-//       message:
-//         "Tingkat stress Anda mulai meningkat dan memerlukan perhatian. Kondisi ini masih dapat dikelola dengan perubahan pola hidup dan manajemen stress yang tepat.",
-//       img: StressMedium,
-//       scoreColor: "text-amber-600",
-//       bgColor: "bg-amber-500",
-//       borderColor: "border-amber-200",
-//       actions: [
-//         {
-//           icon: <Brain className="w-5 h-5" />,
-//           title: "Teknik Relaksasi",
-//           desc: "Praktikkan meditasi, deep breathing, atau mindfulness setiap hari",
-//         },
-//         {
-//           icon: <Briefcase className="w-5 h-5" />,
-//           title: "Manajemen Beban Kerja",
-//           desc: "Diskusikan dengan atasan untuk mengatur prioritas dan deadline kerja",
-//         },
-//         {
-//           icon: <Heart className="w-5 h-5" />,
-//           title: "Dukungan Sosial",
-//           desc: "Bicarakan perasaan dan kondisi Anda dengan orang terdekat",
-//         },
-//         {
-//           icon: <CheckCircle className="w-5 h-5" />,
-//           title: "Evaluasi Gaya Hidup",
-//           desc: "Tinjau kembali pola tidur, nutrisi, dan work-life balance",
-//         },
-//       ],
-//     },
-//     tinggi: {
-//       color: "red",
-//       bgGradient: "from-red-50 to-rose-50",
-//       title: "Memerlukan Bantuan Segera",
-//       subtitle: "Kondisi memerlukan intervensi profesional",
-//       message:
-//         "Tingkat stress Anda sudah mencapai level yang dapat membahayakan kesehatan mental dan fisik. Segera konsultasi dengan tenaga profesional untuk mendapatkan penanganan yang tepat.",
-//       img: StressHigh,
-//       scoreColor: "text-red-600",
-//       bgColor: "bg-red-500",
-//       borderColor: "border-red-200",
-//       actions: [
-//         {
-//           icon: <User className="w-5 h-5" />,
-//           title: "Konsultasi Profesional",
-//           desc: "Segera hubungi psikolog atau psikiater dalam 24-48 jam",
-//         },
-//         {
-//           icon: <Briefcase className="w-5 h-5" />,
-//           title: "Komunikasi dengan HR",
-//           desc: "Bicarakan kondisi dengan HR atau atasan untuk mendapat dukungan kerja",
-//         },
-//         {
-//           icon: <Clock className="w-5 h-5" />,
-//           title: "Pertimbangkan Cuti",
-//           desc: "Ambil waktu istirahat untuk pemulihan kondisi mental yang optimal",
-//         },
-//         {
-//           icon: <Heart className="w-5 h-5" />,
-//           title: "Dukungan Keluarga",
-//           desc: "Libatkan keluarga dan teman dekat dalam proses pemulihan",
-//         },
-//       ],
-//     },
-//   };
-
-//   const cfg = config[stress_level];
-
-//   return (
-//     <div
-//       className={`min-h-screen bg-gradient-to-br ${cfg.bgGradient} p-4 md:p-6`}
-//     >
-//       <div className="max-w-6xl mx-auto space-y-6">
-//         {/* Hero Section */}
-//         <div className="text-center mb-8 space-y-4">
-//           <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border">
-//             <CheckCircle className="w-6 h-6 text-green-500" />
-//             <span className="font-semibold text-gray-700">
-//               Assessment Completed
-//             </span>
-//           </div>
-//           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-//             Hasil Analisis Stress Kerja Anda
-//           </h1>
-//           <p className="text-gray-600 text-lg">
-//             Berikut adalah hasil lengkap dari 109 pertanyaan yang telah Anda
-//             jawab
-//           </p>
-//         </div>
-
-//         {/* Main Result Card */}
-//         <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden">
-//           {/* Header dengan ilustrasi */}
-//           <div
-//             className={`bg-gradient-to-r ${cfg.bgGradient} p-8 text-center relative`}
-//           >
-//             <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
-//             <div className="relative z-10 space-y-6">
-//               {/* Gambar Ilustrasi PNG */}
-//               <div className="flex justify-center">
-//                 <div className="w-48 h-48 bg-white rounded-3xl shadow-lg p-4 flex items-center justify-center">
-//                   <img
-//                     src={cfg.img}
-//                     alt={`Stress level ${stress_level}`}
-//                     className="w-full h-full object-contain"
-//                   />
-//                 </div>
-//               </div>
-//               <div>
-//                 <h2
-//                   className={`text-2xl md:text-3xl font-bold ${cfg.scoreColor} mb-2`}
-//                 >
-//                   {cfg.title}
-//                 </h2>
-//                 <p className="text-gray-600 font-medium text-lg">
-//                   {cfg.subtitle}
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-
-//           <div className="p-8 space-y-6">
-//             {/* Score Visualization */}
-//             <div className="text-center space-y-4">
-//               <div className="flex items-center justify-center gap-6 flex-wrap">
-//                 <div className="text-center">
-//                   <div className={`text-4xl font-bold ${cfg.scoreColor}`}>
-//                     {score_total}
-//                   </div>
-//                   <div className="text-sm text-gray-500">dari {maxScore}</div>
-//                 </div>
-//                 <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
-//                 <div className="text-center">
-//                   <div className={`text-4xl font-bold ${cfg.scoreColor}`}>
-//                     {percentage}%
-//                   </div>
-//                   <div className="text-sm text-gray-500">Total Skor</div>
-//                 </div>
-//                 <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
-//                 <div className="text-center">
-//                   <div className={`text-4xl font-bold ${cfg.scoreColor}`}>
-//                     {problematic_category}
-//                   </div>
-//                   <div className="text-sm text-gray-500">
-//                     Kategori Bermasalah
-//                   </div>
-//                 </div>
-//               </div>
-
-//               {/* Progress Bar */}
-//               <div className="w-full bg-gray-200 rounded-full h-4 shadow-inner">
-//                 <div
-//                   className={`h-4 rounded-full ${cfg.bgColor} shadow-sm transition-all duration-1000 ease-out`}
-//                   style={{ width: `${percentage}%` }}
-//                 ></div>
-//               </div>
-
-//               <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto text-lg">
-//                 {cfg.message}
-//               </p>
-//             </div>
-
-//             {/* Action Plan */}
-//             <div className="space-y-4">
-//               <h3 className="text-xl font-bold text-gray-800 text-center">
-//                 Rencana Tindak Lanjut untuk Anda
-//               </h3>
-//               <div className="grid md:grid-cols-2 gap-4">
-//                 {cfg.actions.map((action, index) => (
-//                   <div
-//                     key={index}
-//                     className="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition-all duration-200 border border-gray-100"
-//                   >
-//                     <div className="flex items-start gap-4">
-//                       <div
-//                         className={`w-12 h-12 rounded-full bg-${cfg.color}-100 flex items-center justify-center flex-shrink-0`}
-//                       >
-//                         <div className={`text-${cfg.color}-600`}>
-//                           {action.icon}
-//                         </div>
-//                       </div>
-//                       <div className="space-y-2">
-//                         <h4 className="font-semibold text-gray-800">
-//                           {action.title}
-//                         </h4>
-//                         <p className="text-sm text-gray-600 leading-relaxed">
-//                           {action.desc}
-//                         </p>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-
-//             {/* Emergency Contact (for high stress) */}
-//             {stress_level === "tinggi" && (
-//               <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6 space-y-4">
-//                 <div className="flex items-center gap-3">
-//                   <AlertTriangle className="w-6 h-6 text-red-500" />
-//                   <h4 className="font-bold text-red-800">Kontak Darurat</h4>
-//                 </div>
-//                 <p className="text-red-700 text-sm">
-//                   Jika Anda merasa dalam kondisi darurat atau memiliki pikiran
-//                   untuk menyakiti diri sendiri, segera hubungi layanan bantuan
-//                   profesional di bawah ini:
-//                 </p>
-//                 <div className="grid sm:grid-cols-2 gap-4">
-//                   <div className="bg-white rounded-xl p-4 border border-red-200 hover:shadow-md transition-shadow cursor-pointer">
-//                     <div className="flex items-center gap-3">
-//                       <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-//                         <Phone className="w-5 h-5 text-red-600" />
-//                       </div>
-//                       <div>
-//                         <p className="font-semibold text-gray-800">
-//                           Hotline Crisis 24/7
-//                         </p>
-//                         <p className="text-sm text-red-600 font-mono">
-//                           119 ext. 8
-//                         </p>
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <div
-//                     className="bg-white rounded-xl p-4 border border-red-200 hover:shadow-md transition-shadow cursor-pointer"
-//                     onClick={() =>
-//                       window.open("https://www.halodoc.com", "_blank")
-//                     }
-//                   >
-//                     <div className="flex items-center gap-3">
-//                       <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-//                         <Globe className="w-5 h-5 text-blue-600" />
-//                       </div>
-//                       <div>
-//                         <p className="font-semibold text-gray-800">
-//                           Konsultasi Online
-//                         </p>
-//                         <p className="text-sm text-blue-600">halodoc.com</p>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* Personal Info Card */}
-//         <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-//           <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-//             <BarChart3 className="w-5 h-5" />
-//             Ringkasan Assessment
-//           </h3>
-//           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-//             <div className="text-center p-4 bg-gray-50 rounded-xl">
-//               <User className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-//               <p className="text-sm text-gray-500 mb-1">Nama Lengkap</p>
-//               <p className="font-semibold text-gray-800">{name}</p>
-//             </div>
-//             <div className="text-center p-4 bg-gray-50 rounded-xl">
-//               <Calendar className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-//               <p className="text-sm text-gray-500 mb-1">Usia</p>
-//               <p className="font-semibold text-gray-800">{age} tahun</p>
-//             </div>
-//             <div className="text-center p-4 bg-gray-50 rounded-xl">
-//               <Briefcase className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-//               <p className="text-sm text-gray-500 mb-1">Status Kerja</p>
-//               <p className="font-semibold text-gray-800">{status}</p>
-//             </div>
-//             <div className="text-center p-4 bg-gray-50 rounded-xl">
-//               <CheckCircle className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-//               <p className="text-sm text-gray-500 mb-1">Completion</p>
-//               <p className="font-semibold text-gray-800">109/109</p>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Action Buttons */}
-//         <div className="flex flex-wrap gap-4 justify-center pt-6">
-//           <button
-//             onClick={() => {
-//               localStorage.clear();
-//               navigate("/form");
-//             }}
-//             className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
-//           >
-//             <User className="w-4 h-4" />
-//             Kembali ke Data Diri
-//           </button>
-//           <button
-//             onClick={() => {
-//               localStorage.clear();
-//               navigate("/form");
-//             }}
-//             className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors"
-//           >
-//             <ArrowRight className="w-4 h-4" />
-//             Isi Assessment Lagi
-//           </button>
-//         </div>
-
-//         {/* Footer Note */}
-//         <div className="text-center text-sm text-gray-500 pt-8 border-t border-gray-200">
-//           <p>
-//             Hasil assessment ini bersifat indikatif dan tidak menggantikan
-//             diagnosis profesional. Untuk evaluasi lengkap, disarankan konsultasi
-//             dengan tenaga kesehatan mental.
-//           </p>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 // src/pages/Results.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -430,27 +5,28 @@ import axios from "axios";
 import {
   Phone,
   Globe,
-  AlertTriangle,
   CheckCircle,
   Clock,
   Heart,
   Brain,
-  Shield,
   User,
   Calendar,
   Briefcase,
   BarChart3,
   ArrowRight,
-  Download,
-  Share2,
+  Home,
+  Shield,
+  Users,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  AlertTriangle,
 } from "lucide-react";
 
-// Import gambar ilustrasi yang sudah ada
 import StressLow from "../assets/stress_low.png";
 import StressMedium from "../assets/stress_medium.png";
 import StressHigh from "../assets/stress_high.png";
 
-// Define the ResultData type according to the expected data structure
 interface ResultData {
   name: string;
   age: number;
@@ -459,6 +35,52 @@ interface ResultData {
   stressLevel: "rendah" | "sedang" | "tinggi";
   wfc_index?: number;
   stress_index?: number;
+}
+
+// Expandable Section Component
+function ExpandableSection({
+  title,
+  icon,
+  children,
+  defaultExpanded = false,
+  colorClass = "blue",
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  defaultExpanded?: boolean;
+  colorClass?: string;
+}) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+
+  return (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`w-full px-6 py-4 flex items-center justify-between bg-gradient-to-r from-${colorClass}-50 to-${colorClass}-100 hover:from-${colorClass}-100 hover:to-${colorClass}-200 transition-all duration-300`}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center bg-${colorClass}-500 text-white`}
+          >
+            {icon}
+          </div>
+          <h3 className="text-lg md:text-xl font-bold text-gray-800 text-left">
+            {title}
+          </h3>
+        </div>
+        {isExpanded ? (
+          <ChevronUp className="w-6 h-6 text-gray-600 flex-shrink-0" />
+        ) : (
+          <ChevronDown className="w-6 h-6 text-gray-600 flex-shrink-0" />
+        )}
+      </button>
+
+      {isExpanded && (
+        <div className="p-6 space-y-4 animate-fadeIn">{children}</div>
+      )}
+    </div>
+  );
 }
 
 export default function Results() {
@@ -470,9 +92,11 @@ export default function Results() {
   useEffect(() => {
     setIsLoaded(false);
     axios
-      .get(`http://localhost:8000/api/results/${respondentId}`)
+      .get(
+        `https://api.skriningstreskerjaperempuan.com/api/results/${respondentId}`
+      )
+      // .get(`http://localhost:8000/api/results/${respondentId}`)
       .then((res) => {
-        console.log("Data dari backend:", res.data);
         setData(res.data);
         setTimeout(() => setIsLoaded(true), 800);
       })
@@ -485,7 +109,7 @@ export default function Results() {
         <div className="text-center space-y-4">
           <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="text-gray-600 font-medium">
-            Menganalisis hasil assessment Anda...
+            Menganalisis hasil skrining Anda...
           </p>
         </div>
       </div>
@@ -507,110 +131,35 @@ export default function Results() {
     (score_total / maxProblematicIndicators) *
     100
   ).toFixed(1);
-  const healthPercentage = (100 - parseFloat(problematicPercentage)).toFixed(1);
 
-  // Enhanced configuration dengan pesan yang lebih supportive
   const config = {
     rendah: {
       color: "emerald",
       bgGradient: "from-emerald-50 to-green-50",
-      title: "Kondisi Baik & Terkendali",
-      subtitle: "Anda dalam kondisi yang sangat baik!",
+      title: "Stres Kerja Rendah",
       message:
-        "Selamat! Kondisi mental dan fisik Anda cukup stabil. Anda memiliki kemampuan yang baik dalam mengelola stress dan menjalani aktivitas sehari-hari dengan optimal.",
+        "Selamat! Kondisi anda saat ini berada di tingkatan stres kerja rendah.",
       img: StressLow,
       scoreColor: "text-emerald-600",
       bgColor: "bg-emerald-500",
-      borderColor: "border-emerald-200",
-      showDetailedScore: false, // Tidak perlu menampilkan detail score
-      actions: [
-        {
-          icon: <Heart className="w-5 h-5" />,
-          title: "Pertahankan Keseimbangan",
-          desc: "Jaga pola tidur 7-8 jam dan konsumsi makanan bergizi seimbang",
-        },
-        {
-          icon: <Clock className="w-5 h-5" />,
-          title: "Aktivitas Fisik Rutin",
-          desc: "Lanjutkan olahraga teratur untuk menjaga kebugaran tubuh dan pikiran",
-        },
-        {
-          icon: <User className="w-5 h-5" />,
-          title: "Hubungan Sosial Positif",
-          desc: "Pertahankan komunikasi baik dengan keluarga dan teman terdekat",
-        },
-      ],
     },
     sedang: {
       color: "orange",
       bgGradient: "from-orange-50 to-amber-50",
-      title: "Kondisi Sedang",
-      subtitle: "Anda perlu lebih waspada terhadap kondisi saat ini",
-      message:
-        "Kondisi Anda menunjukkan tingkat sedang yang memerlukan perhatian. Saatnya untuk lebih proaktif dalam mengelola stress dan melakukan penyesuaian pola hidup.",
+      title: "Stres Kerja Sedang",
+      message: "Kondisi anda saat ini berada di tingkatan stres kerja sedang.",
       img: StressMedium,
       scoreColor: "text-orange-600",
       bgColor: "bg-orange-500",
-      borderColor: "border-orange-200",
-      showDetailedScore: false, // Tidak perlu menampilkan detail score
-      actions: [
-        {
-          icon: <Brain className="w-5 h-5" />,
-          title: "Teknik Relaksasi",
-          desc: "Praktikkan meditasi ringan atau deep breathing untuk menjaga ketenangan",
-        },
-        {
-          icon: <Briefcase className="w-5 h-5" />,
-          title: "Kelola Prioritas",
-          desc: "Atur jadwal kerja dengan baik dan buat prioritas yang realistis",
-        },
-        {
-          icon: <Heart className="w-5 h-5" />,
-          title: "Me Time & Hobi",
-          desc: "Luangkan waktu untuk aktivitas yang Anda sukai dan menyenangkan",
-        },
-        {
-          icon: <CheckCircle className="w-5 h-5" />,
-          title: "Evaluasi Rutinitas",
-          desc: "Tinjau kembali keseimbangan antara kerja dan kehidupan pribadi",
-        },
-      ],
     },
     tinggi: {
       color: "red",
       bgGradient: "from-red-50 to-rose-50",
-      title: "Perlu Dukungan & Perhatian Khusus",
-      subtitle:
-        "Saatnya mencari bantuan profesional untuk kondisi yang lebih baik",
-      message:
-        "Kondisi Anda memerlukan perhatian serius dan dukungan profesional. Ini adalah langkah positif untuk mengenali kondisi diri dan mencari bantuan yang tepat untuk pemulihan optimal.",
+      title: "Stres Kerja Tinggi",
+      message: "Kondisi anda saat ini berada di tingkatan stres kerja tinggi.",
       img: StressHigh,
       scoreColor: "text-red-600",
       bgColor: "bg-red-500",
-      borderColor: "border-red-200",
-      showDetailedScore: true, // Hanya pada tinggi yang perlu detail
-      actions: [
-        {
-          icon: <User className="w-5 h-5" />,
-          title: "Konsultasi Profesional",
-          desc: "Hubungi psikolog atau konselor profesional untuk mendapat dukungan terbaik",
-        },
-        {
-          icon: <Briefcase className="w-5 h-5" />,
-          title: "Dukungan Lingkungan Kerja",
-          desc: "Bicarakan dengan HR atau atasan untuk mendapat dukungan di tempat kerja",
-        },
-        {
-          icon: <Clock className="w-5 h-5" />,
-          title: "Istirahat yang Cukup",
-          desc: "Pertimbangkan untuk mengambil waktu istirahat yang lebih optimal",
-        },
-        {
-          icon: <Heart className="w-5 h-5" />,
-          title: "Dukungan Keluarga",
-          desc: "Libatkan keluarga dan teman dekat dalam proses pemulihan Anda",
-        },
-      ],
     },
   };
 
@@ -621,7 +170,7 @@ export default function Results() {
       className={`min-h-screen bg-gradient-to-br ${cfg.bgGradient} p-4 md:p-6`}
     >
       <div className="max-w-6xl mx-auto space-y-6">
-        {/* Hero Section */}
+        {/* Header */}
         <div className="text-center mb-8 space-y-4">
           <div className="inline-flex items-center gap-3 bg-white px-6 py-3 rounded-full shadow-lg border">
             <CheckCircle className="w-6 h-6 text-green-500" />
@@ -630,185 +179,82 @@ export default function Results() {
             </span>
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-            Hasil Assessment Stress Kerja Anda
+            Hasil Skrining Stres Kerja Anda
           </h1>
-          <p className="text-gray-600 text-lg">
-            Terima kasih telah menyelesaikan 109 pertanyaan dengan lengkap
-          </p>
         </div>
 
-        {/* Main Result Card */}
+        {/* Main Result */}
         <div className="bg-white rounded-3xl shadow-xl border-2 border-gray-100 overflow-hidden">
-          {/* Header dengan ilustrasi */}
-          <div
-            className={`bg-gradient-to-r ${cfg.bgGradient} p-8 text-center relative`}
-          >
-            <div className="absolute inset-0 bg-white/20 backdrop-blur-sm"></div>
-            <div className="relative z-10 space-y-6">
-              {/* Gambar Ilustrasi PNG */}
-              <div className="flex justify-center">
-                <div className="w-48 h-48 bg-white rounded-3xl shadow-lg p-4 flex items-center justify-center">
-                  <img
-                    src={cfg.img}
-                    alt={`Stress level ${stressLevel}`}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-              </div>
-              <div>
-                <h2
-                  className={`text-2xl md:text-3xl font-bold ${cfg.scoreColor} mb-2`}
-                >
-                  {cfg.title}
-                </h2>
-                <p className="text-gray-600 font-medium text-lg">
-                  {cfg.subtitle}
-                </p>
-              </div>
+          <div className={`bg-gradient-to-r ${cfg.bgGradient} p-8 text-center`}>
+            <div className="flex justify-center mb-6">
+              <img
+                src={cfg.img}
+                alt="Stress Illustration"
+                className="w-40 h-40 object-contain"
+              />
             </div>
+            <h2 className={`text-2xl md:text-3xl font-bold ${cfg.scoreColor}`}>
+              {cfg.title}
+            </h2>
           </div>
 
-          <div className="p-8 space-y-6">
-            {/* Score Visualization - Simplified */}
-            <div className="text-center space-y-4">
-              {/* Hanya tampilkan detail score untuk tinggi */}
-              {cfg.showDetailedScore && (
-                <div className="flex items-center justify-center gap-6 flex-wrap">
-                  <div className="text-center">
-                    <div className={`text-4xl font-bold ${cfg.scoreColor}`}>
-                      {score_total}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Area yang Perlu Perhatian
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      dari {maxProblematicIndicators} aspek
-                    </div>
-                  </div>
-
-                  <div className="w-px h-12 bg-gray-200 hidden sm:block"></div>
-
-                  <div className="text-center">
-                    <div className={`text-4xl font-bold ${cfg.scoreColor}`}>
-                      {problematicPercentage}%
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      Tingkat Perhatian Diperlukan
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Simple progress indicator untuk rendah & sedang */}
-              {!cfg.showDetailedScore && (
-                <div className="space-y-4">
-                  <div className="w-full bg-gray-200 rounded-full h-6 shadow-inner relative overflow-hidden">
-                    <div
-                      className={`h-6 rounded-full ${cfg.bgColor} shadow-sm transition-all duration-1000 ease-out flex items-center justify-center`}
-                      style={{
-                        width: stressLevel === "rendah" ? "25%" : "50%",
-                      }}
-                    >
-                      <span className="text-white text-sm font-medium">
-                        {cfg.title}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Detailed progress bar hanya untuk tinggi */}
-              {cfg.showDetailedScore && (
-                <div className="space-y-2">
-                  <div className="w-full bg-emerald-200 rounded-full h-4 shadow-inner relative">
-                    <div
-                      className={`h-4 rounded-full ${cfg.bgColor} shadow-sm transition-all duration-1000 ease-out`}
-                      style={{
-                        width: `${problematicPercentage}%`,
-                        marginLeft: "auto",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              )}
-
-              <p className="text-gray-700 leading-relaxed max-w-2xl mx-auto text-lg">
-                {cfg.message}
-              </p>
-            </div>
-
-            {/* Action Plan */}
-            <div className="space-y-4">
-              <h3 className="text-xl font-bold text-gray-800 text-center">
-                Rekomendasi untuk Anda
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {cfg.actions.map((action, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-50 rounded-2xl p-6 hover:shadow-md transition-all duration-200 border border-gray-100"
-                  >
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`w-12 h-12 rounded-full bg-${cfg.color}-100 flex items-center justify-center flex-shrink-0`}
-                      >
-                        <div className={`text-${cfg.color}-600`}>
-                          {action.icon}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <h4 className="font-semibold text-gray-800">
-                          {action.title}
-                        </h4>
-                        <p className="text-sm text-gray-600 leading-relaxed">
-                          {action.desc}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+          <div className="p-8 space-y-8">
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-200 rounded-full h-6 shadow-inner overflow-hidden">
+              <div
+                className={`h-6 ${cfg.bgColor} transition-all duration-1000 ease-out flex items-center justify-center text-white font-medium text-sm`}
+                style={{
+                  width:
+                    stressLevel === "rendah"
+                      ? "25%"
+                      : stressLevel === "sedang"
+                      ? "50%"
+                      : "80%",
+                }}
+              >
+                {cfg.title}
               </div>
             </div>
 
-            {/* Emergency Contact (for high stress) */}
+            <p className="text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
+              {cfg.message}
+            </p>
+
+            {/* Emergency Section */}
             {stressLevel === "tinggi" && (
-              <div className="bg-blue-50 border-2 border-blue-200 rounded-2xl p-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <Heart className="w-6 h-6 text-blue-500" />
-                  <h4 className="font-bold text-blue-800">
-                    Bantuan Profesional
+              <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                  <h4 className="font-bold text-red-800 text-lg">
+                    Bantuan Profesional Direkomendasikan
                   </h4>
                 </div>
-                <p className="text-blue-700 text-sm">
-                  Untuk mendapat dukungan terbaik dalam proses pemulihan, Anda
-                  dapat menghubungi layanan konseling profesional berikut:
+                <p className="text-red-700 mb-4">
+                  Untuk dukungan lebih lanjut, Anda dapat menghubungi layanan
+                  profesional berikut:
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="bg-white rounded-xl p-4 border border-blue-200 hover:shadow-md transition-shadow cursor-pointer">
+                  <div className="bg-white p-4 border-2 border-red-200 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <Phone className="w-5 h-5 text-blue-600" />
-                      </div>
+                      <Phone className="w-5 h-5 text-red-600" />
                       <div>
                         <p className="font-semibold text-gray-800">
                           Layanan Konseling 24/7
                         </p>
-                        <p className="text-sm text-blue-600 font-mono">
+                        <p className="text-sm text-red-600 font-mono">
                           119 ext. 8
                         </p>
                       </div>
                     </div>
                   </div>
                   <div
-                    className="bg-white rounded-xl p-4 border border-blue-200 hover:shadow-md transition-shadow cursor-pointer"
                     onClick={() =>
                       window.open("https://www.halodoc.com", "_blank")
                     }
+                    className="bg-white p-4 border-2 border-red-200 rounded-xl cursor-pointer hover:border-red-300 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                        <Globe className="w-5 h-5 text-green-600" />
-                      </div>
+                      <Globe className="w-5 h-5 text-green-600" />
                       <div>
                         <p className="font-semibold text-gray-800">
                           Konsultasi Online
@@ -823,68 +269,446 @@ export default function Results() {
           </div>
         </div>
 
-        {/* Personal Info Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5" />
-            Ringkasan Assessment
+        {/* Ringkasan */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 text-center">
+          <h3 className="text-lg font-bold text-gray-800 mb-4 flex justify-center items-center gap-2">
+            <BarChart3 className="w-5 h-5" /> Ringkasan Assessment
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <User className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 mb-1">Nama Lengkap</p>
-              <p className="font-semibold text-gray-800">{name}</p>
+          <p className="text-gray-700">
+            Total skor Anda:{" "}
+            <span className={`font-bold ${cfg.scoreColor} text-2xl`}>
+              {score_total}
+            </span>{" "}
+            dari {maxProblematicIndicators} ({problematicPercentage}%)
+          </p>
+        </div>
+
+        {/* SECTION 1: Apakah Stres Itu? */}
+        <ExpandableSection
+          title="Apakah Stres Itu?"
+          icon={<Info className="w-5 h-5" />}
+          colorClass="blue"
+          defaultExpanded={true}
+        >
+          <div className="space-y-4">
+            <p className="text-gray-700 leading-relaxed">
+              Stres terkait pekerjaan adalah pola reaksi yang terjadi saat
+              pekerja dihadapkan pada tuntutan pekerjaan yang tidak sesuai
+              dengan pengetahuan, keterampilan atau kemampuan mereka, sehingga
+              menguji daya adaptasi mereka. Ketika dipersepsikan ada kendala
+              antara tuntutan dan sumber daya lingkungan atau personal, dapat
+              timbul reaksi seperti:
+            </p>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  Responsifik
+                </h4>
+                <p className="text-sm text-gray-700">
+                  Detak jantung meningkat, tekanan darah meningkat, frekuensi
+                  napas meningkat, sekresi hormon seperti adrenalin dan
+                  kortisol.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                  Responsemosi
+                </h4>
+                <p className="text-sm text-gray-700">
+                  Merasa cemas atau mudah marah
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                  Respon kognitif/pikiran
+                </h4>
+                <p className="text-sm text-gray-700">
+                  Berkurangnya peran penerima, persepsi terganggu, pelupa
+                </p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+                  Respon perilaku
+                </h4>
+                <p className="text-sm text-gray-700">
+                  Agresivitas, impulsivitas, membuat kekellruan
+                </p>
+              </div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <Calendar className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 mb-1">Usia</p>
-              <p className="font-semibold text-gray-800">{age} tahun</p>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <Briefcase className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 mb-1">Status Kerja</p>
-              <p className="font-semibold text-gray-800">{status}</p>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-xl">
-              <CheckCircle className="w-6 h-6 text-gray-500 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 mb-1">Completion</p>
-              <p className="font-semibold text-gray-800">109/109</p>
+
+            <div className="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg">
+              <h4 className="font-bold text-yellow-800 mb-3 text-lg">
+                REAKSI TERHADAP STRESS
+              </h4>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h5 className="font-semibold text-yellow-900 mb-2">
+                    Respon Fisik:
+                  </h5>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Detak jantung meningkat</li>
+                    <li>• Tekanan darah meningkat</li>
+                    <li>• Napas terengah-engah</li>
+                    <li>• Ketegangan otot</li>
+                    <li>• Berkeringat</li>
+                    <li>• Hormon adrenalin meningkat</li>
+                  </ul>
+
+                  <h5 className="font-semibold text-yellow-900 mb-2 mt-4">
+                    Reaksi Pikiran/Kognitif:
+                  </h5>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Pemikiran berkurang</li>
+                    <li>• Persepsi terganggu</li>
+                    <li>• Berpikir tidak efektif</li>
+                    <li>• Pemecahan masalah terganggu</li>
+                    <li>• Kemampuan belajar terganggu</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h5 className="font-semibold text-yellow-900 mb-2">
+                    Respon Emosional:
+                  </h5>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Rasa takut</li>
+                    <li>• Mudah tersinggung/marah</li>
+                    <li>• Sedih</li>
+                    <li>• Cemas</li>
+                    <li>• Marah</li>
+                    <li>• Motivasi berkurang</li>
+                  </ul>
+
+                  <h5 className="font-semibold text-yellow-900 mb-2 mt-4">
+                    Reaksi Perilaku:
+                  </h5>
+                  <ul className="space-y-1 text-sm text-gray-700">
+                    <li>• Penurunan produktivitas</li>
+                    <li>• Merokok tambah banyak</li>
+                    <li>• Konsumsi alkohol meningkat</li>
+                    <li>• Obat-obatan meningkat</li>
+                    <li>• Sering berbuat keliru/an</li>
+                    <li>• Sering tidak masuk</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </ExpandableSection>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap gap-4 justify-center pt-6">
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/form");
-            }}
-            className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            <User className="w-4 h-4" />
-            Kembali ke Data Diri
-          </button>
-          <button
-            onClick={() => {
-              localStorage.clear();
-              navigate("/form");
-            }}
-            className="flex items-center gap-2 px-6 py-3 bg-gray-800 text-white rounded-xl hover:bg-gray-900 transition-colors"
-          >
-            <ArrowRight className="w-4 h-4" />
-            Isi Assessment Lagi
-          </button>
-        </div>
+        {/* SECTION 2: Penyebab Stres */}
+        <ExpandableSection
+          title="Penyebab Stres Terkait Pekerjaan"
+          icon={<AlertTriangle className="w-5 h-5" />}
+          colorClass="amber"
+        >
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-amber-50 p-6 rounded-xl border border-amber-200">
+              <h4 className="font-bold text-amber-900 mb-4 text-lg">
+                Pekerjaan:
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li>• Ritme kerja yang tinggi, tekanan waktu</li>
+                <li>• Kurang jelasnya penerapan aturan dalam pekerjaan</li>
+                <li>• Partisipasi yang rendah</li>
+                <li>• Ketidakcocokan sebarawat dan penyelia</li>
+                <li>• Pengembangan karir buruk</li>
+                <li>• Pekerjaan tidak jelas</li>
+                <li>• Jam kerja panjang</li>
+                <li>• Penghasilan rendah</li>
+                <li>• Pelecehan seksual dan/atau psikologis</li>
+              </ul>
+            </div>
 
-        {/* Footer Note */}
-        <div className="text-center text-base text-gray-600 pt-10 border-t-2 border-gray-200">
-          <p className="leading-relaxed font-medium max-w-4xl mx-auto">
-            Hasil assessment ini bersifat indikatif untuk membantu Anda memahami
-            kondisi diri. Untuk evaluasi yang lebih komprehensif, kami
-            merekomendasikan konsultasi dengan tenaga kesehatan mental
-            profesional.
+            <div className="bg-amber-50 p-6 rounded-xl border border-amber-200">
+              <h4 className="font-bold text-amber-900 mb-4 text-lg">
+                Masalah Rumah-Pekerjaan:
+              </h4>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li>
+                  • Konflik peran dan tanggung jawab, terutama pada perempuan
+                </li>
+                <li>
+                  • Membawa permasalahan pekerjaan kantor di rumah, keluarga
+                  terkena dampak akibat stres pekerjaan
+                </li>
+                <li>• Adanya masalah/konflik keluarga</li>
+                <li>• Kesulitan dalam kebutuhan hidup sehari-hari</li>
+              </ul>
+            </div>
+          </div>
+        </ExpandableSection>
+
+        {/* SECTION 3: Manajemen Stres Kerja */}
+        <ExpandableSection
+          title="Manajemen Stres Kerja"
+          icon={<Brain className="w-5 h-5" />}
+          colorClass="purple"
+          defaultExpanded={true}
+        >
+          <p className="text-gray-600 mb-6">
+            Beberapa cara untuk menghadapi stres terkait pekerjaan dicantumkan
+            di bawah ini.
           </p>
+
+          <div className="space-y-4">
+            {/* Sediakan Beragam Aktivitas Kesehatan */}
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-l-4 border-green-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-green-500 text-white flex-shrink-0">
+                  <Heart className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Sediakan Beragam Aktivitas Kesehatan
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    Latihan fisik dan teknik relaksasi dapat membantu menurunkan
+                    respon stres dan memperbaiki kesejahteraan. Ada studi yang
+                    menunjukkan bahwa latihan fisik di tempat kerja dapat
+                    meningkatkan produktivitas.
+                  </p>
+                  <p className="text-gray-700 leading-relaxed mt-3">
+                    Menyediakan waktu setengah jam, dua kali seminggu, akan
+                    menghasilkan pekerja dengan berat badan yang lebih sehat,
+                    tekanan darah lebih rendah, tenaga yang meningkat, jadwal
+                    tidur lebih baik dan memperbaiki keterampilan manajemen
+                    stres, hanya dalam waktu delapan minggu.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Manajemen Stres */}
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-blue-500 text-white flex-shrink-0">
+                  <Brain className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Manajemen Stres
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    Lokakarya terjadwal yang melatih pekerja tentang sumber
+                    stres, dampaknya terhadap kesehatan dan bagaimana mengurangi
+                    stres, akan lebih efektif jika ditunjang dengan teknik
+                    praktis manajemen stres yang dapat digunakan di pekerjaan
+                    dan di luar kerja.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Jeda Latihan Fisik Terprogram */}
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-purple-500 text-white flex-shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Jeda Latihan Fisik Terprogram
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    Penelitian telah membuktikan bahwa olah raga ringan sampai
+                    sedang, seperti berjalan atau yoga, dapat menurunkan kadar
+                    kortison yang dapat mengakibatkan stres. Jalan kaki singkat
+                    setiap hari dapat membuat pekerja segar sepanjang hari,
+                    mengurangi stres dan meningkatkan produktivitas.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Kelompok Dukungan */}
+            <div className="bg-gradient-to-r from-orange-50 to-amber-50 border-l-4 border-orange-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-orange-500 text-white flex-shrink-0">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Kelompok Dukungan
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed">
+                    Stres dapat diredakan manakala pekerja berbagi
+                    kekhawatirannya tentang masalah kerja, krisis kehidupan,
+                    masalah keluarga, pemberian rawatan dan metode manajemen
+                    stres. Kelompok dukungan seperti ini dapat bersifat permanen
+                    dan melibatkan pekerja dari semua tingkatan.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Strategi Keseimbangan Kerja/Kehidupan */}
+            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 border-l-4 border-teal-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-teal-500 text-white flex-shrink-0">
+                  <Briefcase className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Strategi Keseimbangan Kerja/Kehidupan
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    Mengembangkan jadwal kerja yang sesuai dengan tuntutan dan
+                    tanggung jawab di luar pekerjaan serta menyediakan layanan
+                    pendukung dapat mengurangi stres. Berikut beberapa
+                    strateginya:
+                  </p>
+
+                  <div className="space-y-4">
+                    <div className="bg-white p-4 rounded-lg border border-teal-200">
+                      <h5 className="font-semibold text-teal-900 mb-2">
+                        Mengatur waktu dalam bekerja
+                      </h5>
+                      <p className="text-sm text-gray-700">
+                        Mengatur waktu bekerja secara efektif sehingga memiliki
+                        waktu lebih untuk beristirahat dapat mengurangi stres
+                        kerja. Jika memerlukan waktu yang lebih fleksibel dalam
+                        bekerja, pemilihan jenis pekerjaan juga sangat penting
+                        untuk dipertimbangkan.
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg border border-teal-200">
+                      <h5 className="font-semibold text-teal-900 mb-2">
+                        Berbagi Pekerjaan
+                      </h5>
+                      <p className="text-sm text-gray-700">
+                        Melatih setidaknya dua orang untuk melakukan setiap
+                        pekerjaan akan membuat pekerja mempunyai waktu jeda
+                        tanpa kehilangan produktivitas.
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg border border-teal-200">
+                      <h5 className="font-semibold text-teal-900 mb-2">
+                        Bekerja Dari Rumah
+                      </h5>
+                      <p className="text-sm text-gray-700">
+                        Hal ini dapat meningkatkan semangat dan kepuasan kerja,
+                        menurunkan stres dan pergantian pekerja, karena pekerja
+                        mempunyai kontrol yang lebih besar terhadap cara mereka
+                        bekerja, juga membuat pekerja dapat lebih baik mengatur
+                        tuntutan kerja/keluarga.
+                      </p>
+                    </div>
+
+                    <div className="bg-white p-4 rounded-lg border border-teal-200">
+                      <h5 className="font-semibold text-teal-900 mb-2">
+                        Menikmati waktu makan siang untuk bersantai
+                      </h5>
+                      <p className="text-sm text-gray-700">
+                        Manfaatkan secara efektif waktu makan siang untuk
+                        bersantai dan mendorong aktivitas yang menenangkan serta
+                        mengurangi stres. Jika ada waktu yang cukup, misalnya
+                        dapat digunakan untuk berjalan kaki ke tempat makan
+                        siang.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mengatur Peran Kerja */}
+            <div className="bg-gradient-to-r from-rose-50 to-red-50 border-l-4 border-rose-500 p-6 rounded-xl">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-rose-500 text-white flex-shrink-0">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-bold text-gray-800 mb-3">
+                    Mengatur Peran Kerja
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    Beberapa hal yang dapat dilakukan oleh perusahaan/organisasi
+                    untuk membantu mengurangi stres misalnya:
+                  </p>
+
+                  <ul className="space-y-2 text-gray-700">
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Memberikan beban kerja sesuai dengan kapabilitas dan
+                        sumber daya pekerja
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Mengembangkan pekerjaan untuk memberikan kesempatan,
+                        mendorong dan menghargai pekerja menggunakan
+                        keterampilan mereka
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Menetapkan peran dan tanggung jawab pekerja secara jelas
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Memberikan kesempatan bagi pekerja untuk ikut serta
+                        dalam pengambilan keputusan yang berdampak pada
+                        pekerjaan mereka
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Memperbaiki komunikasi untuk mengurangi ketidakpastian
+                        tentang pengembangan karir dan masa depan pekerja
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-rose-500 font-bold">•</span>
+                      <span>
+                        Menyediakan kesempatan untuk interaksi sosial antar
+                        pekerja
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ExpandableSection>
+
+        {/* Footer - Referensi */}
+        <div className="bg-gradient-to-r from-gray-50 to-slate-100 rounded-2xl shadow-lg border border-gray-200 p-6 text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Shield className="w-5 h-5 text-gray-600" />
+            <p className="text-sm font-semibold text-gray-700">Referensi</p>
+          </div>
+          <p className="text-gray-600 text-sm">
+            Kementerian Kesehatan Republik Indonesia
+          </p>
+        </div>
+
+        {/* CTA Button */}
+        <div className="text-center pb-8">
+          <button
+            onClick={() => navigate("/")}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-full font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+          >
+            <Home className="w-5 h-5" />
+            Kembali ke Beranda
+          </button>
         </div>
       </div>
     </div>
