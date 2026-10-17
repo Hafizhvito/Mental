@@ -28,6 +28,7 @@ class RespondentController extends Controller
             'stress_index' => 'required|integer|min:0|max:4',
             'score_category' => 'required|string',
             'score_details' => 'required|string',
+            'answers' => 'nullable',
         ]);
 
         // Log untuk debugging
@@ -49,6 +50,9 @@ class RespondentController extends Controller
         try {
             $resultData['score_category'] = json_decode($resultData['score_category'], true);
             $resultData['score_details'] = json_decode($resultData['score_details'], true);
+            if (isset($resultData['answers']) && is_string($resultData['answers'])) {
+                $resultData['answers'] = json_decode($resultData['answers'], true);
+            }
         } catch (Exception $e) {
             Log::error("JSON decode error: " . $e->getMessage());
             return response()->json(['error' => 'Invalid JSON format'], 400);
@@ -100,6 +104,7 @@ class RespondentController extends Controller
         'stress_index' => $latestResult->stress_index,   // Tambahkan ini
         'score_category' => $latestResult->score_category,
         'score_details' => $latestResult->score_details,
+        'answers' => $latestResult->answers,
     ]);
 }
 

@@ -20,11 +20,13 @@ class Result extends Model
     'stress_index',
     'score_category',
     'score_details',
+    'answers',
 ];
 
 protected $casts = [
     'score_category' => 'array',
     'score_details' => 'array',
+    'answers' => 'array',
 ];
 
     public function respondent()

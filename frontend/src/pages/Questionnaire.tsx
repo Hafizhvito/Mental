@@ -6,6 +6,7 @@ import { questions } from "../data/questions";
 import { calculateScores } from "../utils/Scoring";
 import axios from "axios";
 import { useEffect } from "react";
+import { API_BASE_URL } from "../api/config";
 
 // 🔹 Kumpulan kata penyemangat
 const encouragementMessages = [
@@ -370,13 +371,14 @@ export default function Questionnaire() {
 
         score_category: JSON.stringify(scores.perCategory),
         score_details: JSON.stringify(scores.perQuestion),
+        answers: JSON.stringify(answers),
       };
 
       console.log("Payload yang akan dikirim:", payload);
       console.log("Stress Level final:", scores.stressLevel);
 
       const res = await axios.post(
-        "https://api.skriningstreskerjaperempuan.com/api/respondent",
+        `${API_BASE_URL}/respondent`,
         payload,
         {
           headers: { "Content-Type": "application/json" },

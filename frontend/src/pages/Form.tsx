@@ -1,6 +1,6 @@
-// frontend/src/pages/Form.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 
 type Post = {
   id: number;
@@ -13,7 +13,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get<Post[]>("https://api.skriningstreskerjaperempuan.com/api/posts")
+      .get<Post[]>(`${API_BASE_URL}/posts`)
       .then((res) => setPosts(res.data));
   }, []);
 

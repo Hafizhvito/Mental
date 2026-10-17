@@ -1,7 +1,7 @@
-// src/pages/Results.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 import {
   Phone,
   Globe,
@@ -93,9 +93,8 @@ export default function Results() {
     setIsLoaded(false);
     axios
       .get(
-        `https://api.skriningstreskerjaperempuan.com/api/results/${respondentId}`
+        `${API_BASE_URL}/results/${respondentId}`
       )
-      // .get(`http://localhost:8000/api/results/${respondentId}`)
       .then((res) => {
         setData(res.data);
         setTimeout(() => setIsLoaded(true), 800);

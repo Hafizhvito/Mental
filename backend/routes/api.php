@@ -19,5 +19,7 @@ Route::post('/doctor/register', [DoctorAuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/doctor/logout', [DoctorAuthController::class, 'logout']);
     Route::get('/results', [DashboardController::class, 'index']); // untuk dashboard doctor
+    Route::delete('/results/{id}', [DashboardController::class, 'destroy']);
+    Route::delete('/results', [DashboardController::class, 'destroyAll']);
     Route::get('/doctors', [DoctorAuthController::class, 'index']);
 });

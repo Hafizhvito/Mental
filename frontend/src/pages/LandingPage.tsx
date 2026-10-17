@@ -12,6 +12,7 @@ import {
   UserCircle,
 } from "lucide-react";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 // Import gambar - pastikan path benar
 import Female from "../assets/Female.png";
 
@@ -26,8 +27,7 @@ export default function LandingPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // const res = await axios.post("http://localhost:8000/api/doctor/login", {
-        const res = await axios.post("https://api.skriningstreskerjaperempuan.com/api/doctor/login", {
+      const res = await axios.post(`${API_BASE_URL}/doctor/login`, {
         username,
         password,
       });

@@ -3,6 +3,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { User, Lock, Stethoscope } from "lucide-react";
+import { API_BASE_URL } from "../api/config";
 
 export default function DoctorLogin() {
   const [username, setUsername] = useState("");
@@ -13,7 +14,7 @@ export default function DoctorLogin() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://api.skriningstreskerjaperempuan.com/api/doctor/login",
+        `${API_BASE_URL}/doctor/login`,
         { username, password }
       );
 

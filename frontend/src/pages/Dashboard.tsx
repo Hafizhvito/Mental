@@ -1,7 +1,7 @@
-// src/pages/Dashboard.tsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api/config";
 import {
   Users,
   TrendingUp,
@@ -13,9 +13,13 @@ import {
   ChevronDown,
   Download,
   FileText,
+  FileSpreadsheet,
+  Trash2,
+  AlertCircle,
 } from "lucide-react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { exportToExcel } from "../utils/excelExport";
 
 interface Respondent {
   id: number;
@@ -28,8 +32,13 @@ interface Result {
   id: number;
   respondent: Respondent;
   score_total: number;
-  problematic_category: number;
+  problematic_category?: number;
   stress_level: "rendah" | "sedang" | "tinggi";
+  wfc_index?: number;
+  stress_index?: number;
+  score_category?: Record<string, any>;
+  score_details?: Record<string, any>;
+  answers?: Record<string | number, any>;
   created_at: string;
 }
 
@@ -41,6 +50,10 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState(""); // 🔍 state pencarian
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string } | null>(null);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isExportingExcel, setIsExportingExcel] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -56,7 +69,7 @@ const Dashboard = () => {
         setError(null);
 
         const res = await axios.get(
-          "https://api.skriningstreskerjaperempuan.com/api/results",
+          `${API_BASE_URL}/results`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -106,7 +119,7 @@ const Dashboard = () => {
 
       if (token) {
         await axios.post(
-          "http://localhost:8000/api/doctor/logout",
+          `${API_BASE_URL}/doctor/logout`,
           {},
           {
             headers: {
@@ -153,6 +166,60 @@ const Dashboard = () => {
     });
 
     doc.save("laporan-stress.pdf");
+  };
+
+  // 📌 Export ke Excel (.xlsx)
+  const handleExportExcel = async () => {
+    if (results.length === 0) {
+      alert("Tidak ada data untuk diekspor.");
+      return;
+    }
+    try {
+      setIsExportingExcel(true);
+      await exportToExcel(results as any);
+    } catch (err) {
+      console.error("Export Excel error:", err);
+      alert("Terjadi kesalahan saat mengekspor Excel.");
+    } finally {
+      setIsExportingExcel(false);
+    }
+  };
+
+  // 🗑️ Hapus 1 Responden
+  const confirmDeleteSingle = async () => {
+    if (!deleteTarget) return;
+    try {
+      setIsDeleting(true);
+      const token = localStorage.getItem("doctor_token");
+      await axios.delete(`${API_BASE_URL}/results/${deleteTarget.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setResults((prev) => prev.filter((r) => r.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Gagal menghapus data responden.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // 🗑️ Hapus Semua Responden
+  const confirmDeleteAll = async () => {
+    try {
+      setIsDeleting(true);
+      const token = localStorage.getItem("doctor_token");
+      await axios.delete(`${API_BASE_URL}/results`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setResults([]);
+      setShowDeleteAllModal(false);
+    } catch (err) {
+      console.error("Delete all error:", err);
+      alert("Gagal menghapus seluruh data responden.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   // Loading state
@@ -253,14 +320,26 @@ const Dashboard = () => {
         {/* Data Table */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60">
           <div className="p-6 border-b border-slate-200">
-            <div className="flex items-center space-x-3 mb-6">
-              <Users className="w-4 h-4 text-slate-600" />
-              <h2 className="text-xl font-bold text-slate-900">
-                Data Responden
-              </h2>
-              <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium">
-                {totalResponden}
-              </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+              <div className="flex items-center space-x-3">
+                <Users className="w-5 h-5 text-slate-600" />
+                <h2 className="text-xl font-bold text-slate-900">
+                  Data Responden
+                </h2>
+                <span className="px-2.5 py-1 bg-slate-100 text-slate-600 rounded-full text-sm font-medium">
+                  {totalResponden}
+                </span>
+              </div>
+              {results.length > 0 && (
+                <button
+                  onClick={() => setShowDeleteAllModal(true)}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all self-start sm:self-auto"
+                  title="Hapus semua data responden yang tersimpan"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Hapus Semua Data</span>
+                </button>
+              )}
             </div>
 
             {/* Search & Filter */}
@@ -342,13 +421,27 @@ const Dashboard = () => {
                         {res.respondent.status}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-slate-900">
-                        {res.score_total}
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-slate-900">
+                          {res.score_total}
+                        </div>
+                        <div className="text-xs text-slate-500">
+                          Skor Kesehatan Mental
+                        </div>
                       </div>
-                      <div className="text-xs text-slate-500">
-                        Skor Kesehatan Mental
-                      </div>
+                      <button
+                        onClick={() =>
+                          setDeleteTarget({
+                            id: res.id,
+                            name: res.respondent.name,
+                          })
+                        }
+                        className="p-2.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-all"
+                        title={`Hapus data ${res.respondent.name}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -370,8 +463,17 @@ const Dashboard = () => {
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
+                onClick={handleExportExcel}
+                disabled={isExportingExcel || results.length === 0}
+                className="flex items-center justify-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm font-semibold transition-all shadow-sm disabled:opacity-50"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>{isExportingExcel ? "Menyiapkan Excel..." : "Download Excel (.xlsx)"}</span>
+              </button>
+              <button
                 onClick={handleExportPDF}
-                className="flex items-center justify-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 text-sm font-semibold"
+                disabled={results.length === 0}
+                className="flex items-center justify-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-xl hover:bg-slate-800 text-sm font-semibold transition-all shadow-sm disabled:opacity-50"
               >
                 <FileText className="w-4 h-4" />
                 <span>Download PDF</span>
@@ -379,6 +481,77 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Modal Konfirmasi Hapus 1 Responden */}
+        {deleteTarget && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
+              <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-4">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">
+                Hapus Data Responden?
+              </h3>
+              <p className="text-sm text-slate-600 mb-6">
+                Apakah Anda yakin ingin menghapus data responden atas nama{" "}
+                <strong className="text-slate-900">{deleteTarget.name}</strong>? Data yang dihapus tidak dapat dikembalikan.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteSingle}
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? "Menghapus..." : "Ya, Hapus Data"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Konfirmasi Hapus Semua Responden */}
+        {showDeleteAllModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
+              <div className="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-4">
+                <AlertCircle className="w-6 h-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900 mb-2">
+                Hapus SEMUA Data Responden?
+              </h3>
+              <p className="text-sm text-slate-600 mb-6">
+                PERINGATAN: Tindakan ini akan menghapus <strong>seluruh {totalResponden} data responden</strong> yang tersimpan pada sistem. Data yang dihapus tidak dapat dipulihkan kembali.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteAllModal(false)}
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmDeleteAll}
+                  disabled={isDeleting}
+                  className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? "Menghapus Semua..." : "Ya, Hapus Semua"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
